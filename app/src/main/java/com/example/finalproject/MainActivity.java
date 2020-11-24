@@ -175,20 +175,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void update() {
         points += cps/100;
         tvPoints.setText(Integer.toString(points));
-        tvCps.setText(Integer.toString(cps) + " cps");
+        tvCps.setText(Integer.toString(cps) + " bps");
     }
 
     private void save() {
         SharedPreferences preferences = getSharedPreferences("GAME", 0);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("cps", cps);
+        editor.putInt("bps", cps);
         editor.putInt("bricks", points);
         editor.commit();
     }
 
     private void open() {
         SharedPreferences preferences = getSharedPreferences("GAME",0);
-        cps = preferences.getInt("cps",0);
+        cps = preferences.getInt("bps",0);
         points = preferences.getInt("bricks",0);
     }
 
