@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">finalProject</string>
-    <string name="clicked">+1</string>
+    <string name="clicked">+</string>
     <string name = "shop">Go to Shop</string>
 </resources>

@@ -27,14 +27,13 @@
         />
 
 
-
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id ="@+id/brick"
         android:layout_gravity="center_vertical"
         android:onClick="onClick"
-        android:background="@drawable/brick"
+        android:background="@drawable/brickb"
         />
     
     <Button

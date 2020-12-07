@@ -6,10 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,9 +35,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tvPoints;
     private int points;
     private int cps;
+    private int pointIncreaser = 1;
     private BrickCounter brickCounter = new BrickCounter();
     private Random random;
+    private Random randocol;
     private TextView tvCps;
+    //private ImageView b;
 
     private String[] Names = {"Clicker"};
     private String[] Description =  {"+100 bricks per second"};
@@ -53,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
 
+
+
         sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sm.registerListener(sensorListener, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 
@@ -60,9 +67,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         acelLast = SensorManager.GRAVITY_EARTH;
         shake = 0.00f;
 
+        //b = (ImageView)findViewById(R.id.brick);
+
         tvPoints = findViewById(R.id.tvPoints);
         tvCps = findViewById(R.id.tvCps);
         random = new Random();
+        randocol = new Random();
         open();
 
     }
@@ -81,9 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             if(acelVal > acelLast + 0.01 || acelVal < acelLast - 0.01)
             {
-                points++;
-                tvPoints.setText(Integer.toString(points));
-                showToast(R.string.clicked);
+                brickClick();
             }
 
         }
@@ -119,6 +127,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if(v.getId() == R.id.brick)
         {
+
+
+
             Animation a = AnimationUtils.loadAnimation(this, R.anim.brick_animation);
             a.setAnimationListener(new SimpleAnimationListener() {
                 @Override
@@ -127,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
             v.startAnimation(a);
+
         } else if(v.getId() == R.id.btnShop) {
             showShopFragments();
             save();
@@ -140,20 +152,99 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void brickClick() {
-        points++;
+        //b.setColorFilter(Color.RED, PorterDuff.Mode.LIGHTEN);
+        //Drawable myDrawable = ContextCompat.getDrawable(this,R.drawable.brick);
+        //myDrawable.setTint(ContextCompat.getColor(this, R.color.colorPrimary));
+        ImageView changeCol = (ImageView) findViewById(R.id.brick);
+        int a = randocol.nextInt(12);
+        int col = 0;
+
+        switch (a)
+        {
+            case 0: // code to be executed if n = 1;
+                break;
+            case 1: // code to be executed if n = 2;
+                col = R.color.lightblue;
+                break;
+            case 2: // code to be executed if n = 1;
+                col = R.color.red;
+                break;
+            case 3: // code to be executed if n = 2;
+                col = R.color.orange;
+                break;
+            case 4: // code to be executed if n = 1;
+                col = R.color.yellow;
+                break;
+            case 5: // code to be executed if n = 2;
+                col = R.color.green;
+                break;
+            case 6: // code to be executed if n = 1;
+                col = R.color.darkgreen;
+                break;
+            case 7: // code to be executed if n = 2;
+                col = R.color.blue;
+                break;
+            case 8: // code to be executed if n = 1;
+                col = R.color.purple;
+                break;
+            case 9: // code to be executed if n = 2;
+                col = R.color.black;
+                break;
+            case 10: // code to be executed if n = 1;
+                col = R.color.brown;
+                break;
+            case 11: // code to be executed if n = 2;
+                col = R.color.tan;
+                break;
+            case 12: // code to be executed if n = 2;
+                col = R.color.white;
+                break;
+            default: // code to be executed if n doesn't match any case
+        }
+
+        changeCol.setColorFilter(null);
+        if(a != 0)
+        {
+            changeCol.setColorFilter(col,  PorterDuff.Mode.SRC_ATOP);
+            changeCol.setImageResource(R.drawable.brickb);
+        }
+
+
+
+        points += pointIncreaser;
         tvPoints.setText(Integer.toString(points));
-        showToast(R.string.clicked);
+        showToast("+" + pointIncreaser);
     }
 
-    private void showToast(int stringID) {
+    private void showToast(String stringID) {
+        int x = random.nextInt(600)+100;
+        int y = random.nextInt(600)-300;
+
+
+
+
         final Toast toast = new Toast(this);
-        toast.setGravity(Gravity.CENTER|Gravity.LEFT,random.nextInt(600)+100,random.nextInt(600)-300);
+
+        LinearLayout toastLayout = new LinearLayout(this);
+        toastLayout.setOrientation(LinearLayout.VERTICAL);
+
+        ImageView image = new ImageView(this);
+        image.setImageResource(R.drawable.brickbrickbri);
+        //image.setColorFilter(Color.RED, PorterDuff.Mode.LIGHTEN);
+
+
+
+
+        toast.setGravity(Gravity.CENTER|Gravity.LEFT,x,y);
         toast.setDuration(toast.LENGTH_SHORT);
         TextView textView = new TextView(this);
         textView.setText(stringID);
         textView.setTextSize(40f);
         textView.setTextColor(Color.BLACK);
-        toast.setView(textView);
+        toastLayout.addView(image);
+        toastLayout.addView(textView);
+
+        toast.setView(toastLayout);
         CountDownTimer toastCountDown;
         toastCountDown = new CountDownTimer(500,100) {
             @Override
