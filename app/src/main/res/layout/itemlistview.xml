@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AbsoluteLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="75dp">
+    android:layout_height="180dp">
 
     <TextView
         android:id="@+id/tvName"
@@ -16,7 +16,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_x="5dp"
-        android:layout_y="40dp"
+        android:layout_y="35dp"
+        android:text="00000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvCost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_x="18dp"
+        android:layout_y="60dp"
         android:text="00000"
         android:textSize="20sp" />
 

@@ -42,8 +42,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tvCps;
     //private ImageView b;
 
-    private String[] Names = {"Clicker"};
-    private String[] Description =  {"+100 bricks per second"};
+    private String[] Names = {"Brick Stackers", "Better Tools", "Elite Stackers", "Cement Mixers", "Automation", "Advanced Logistics", "Futuristic Robots", "Alternate Timelines"};
+    private String[] Description =  {"+100 bricks per second", "+20 bricks per click", "+1000 bricks per second", "+2000 bricks per click", "+10000 bricks per second", "+20000 bricks per click", "+1000000 bricks per second", "+2000000 bricks per click"};
+    private int[] multipliers = {1,1,1,1,1,1,1,1};
 
     private SensorManager sm;
     private float acelVal;
@@ -74,6 +75,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         random = new Random();
         randocol = new Random();
         open();
+        for(int i = 0; i < 8; i++)
+        {
+            if(multipliers[i] == 0)
+            {
+                multipliers[i] = 1;
+            }
+        }
+
+        if(pointIncreaser == 0)
+        {
+            pointIncreaser = 1;
+        }
+
 
     }
 
@@ -140,8 +154,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             v.startAnimation(a);
 
         } else if(v.getId() == R.id.btnShop) {
-            showShopFragments();
             save();
+            showShopFragments();
         }
     }
 
@@ -152,9 +166,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void brickClick() {
-        //b.setColorFilter(Color.RED, PorterDuff.Mode.LIGHTEN);
-        //Drawable myDrawable = ContextCompat.getDrawable(this,R.drawable.brick);
-        //myDrawable.setTint(ContextCompat.getColor(this, R.color.colorPrimary));
         ImageView changeCol = (ImageView) findViewById(R.id.brick);
         int a = randocol.nextInt(12);
         int col = 0;
@@ -264,6 +275,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void update() {
+        if(cps < 100 && cps > 0)
+        {
+            points += 1;
+        }
         points += cps/100;
         tvPoints.setText(Integer.toString(points));
         tvCps.setText(Integer.toString(cps) + " bps");
@@ -274,13 +289,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt("bps", cps);
         editor.putInt("bricks", points);
-        editor.commit();
+        editor.putInt("mult0", multipliers[0]);
+        editor.putInt("mult1", multipliers[1]);
+        editor.putInt("mult2", multipliers[2]);
+        editor.putInt("mult3", multipliers[3]);
+        editor.putInt("mult4", multipliers[4]);
+        editor.putInt("mult5", multipliers[5]);
+        editor.putInt("mult6", multipliers[6]);
+        editor.putInt("mult7", multipliers[7]);
+        editor.putInt("increaser",pointIncreaser);
+        editor.apply();
     }
 
     private void open() {
         SharedPreferences preferences = getSharedPreferences("GAME",0);
-        cps = preferences.getInt("bps",0);
+        cps = preferences.getInt("bps", 0);
         points = preferences.getInt("bricks",0);
+        pointIncreaser = preferences.getInt("increaser",1);
+        multipliers[0] = preferences.getInt("mult0",1);
+        multipliers[1] = preferences.getInt("mult1",1);
+        multipliers[2] = preferences.getInt("mult2",1);
+        multipliers[3] = preferences.getInt("mult3",1);
+        multipliers[4] = preferences.getInt("mult4",1);
+        multipliers[5] = preferences.getInt("mult5",1);
+        multipliers[6] = preferences.getInt("mult6",1);
+        multipliers[7] = preferences.getInt("mult7",1);
+
     }
 
     private void showShopFragments() {
@@ -334,22 +368,70 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public long getItemId(int i) {
-            return 0;
+            return i;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup viewGroup) {
-            convertView = getLayoutInflater().inflate(R.layout.itemlistview, null);
+        public View getView(final int position, View cv, ViewGroup viewGroup) {
+            final View convertView = getLayoutInflater().inflate(R.layout.itemlistview, null);
             ((TextView)convertView.findViewById(R.id.tvName)).setText(Names[position]);
             ((TextView)convertView.findViewById(R.id.tvDescription)).setText(Description[position]);
+            ((TextView)convertView.findViewById(R.id.tvCost)).setText("Cost: " + (int)Math.pow(position + 2, multipliers[position])+(int)Math.pow(10,position));
+            /*multipliers[0]=1;
+            multipliers[1]=1;
+            multipliers[2]=1;
+            multipliers[3]=1;
+            multipliers[4]=1;
+            multipliers[5]=1;
+            multipliers[6]=1;
+            multipliers[7]=1;*/
+
+
+
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(getCount() == 1) {
-                        if(points >= 100) {
-                            updateCps(100);
-                            updatePoints(100);
+                    if(getCount() == 8) {
+                        if(points >= (int)Math.pow(position + 2, multipliers[position])+(int)Math.pow(10,position)) {
+                            switch (position)
+                            {
+                                case 0: // code to be executed if n = 1;
+                                    updateCps(100);
+                                    updatePoints((int)Math.pow(position + 2, multipliers[position])+(int)Math.pow(10,position));
+                                    break;
+                                case 1: // code to be executed if n = 1;
+                                    pointIncreaser += 20;
+                                    updatePoints((int)Math.pow(position + 2, multipliers[position])+(int)Math.pow(10,position));
+                                    break;
+                                case 2: // code to be executed if n = 1;
+                                    updateCps(1000);
+                                    updatePoints((int)Math.pow(position + 2, multipliers[position])+(int)Math.pow(10,position));
+                                    break;
+                                case 3: // code to be executed if n = 1;
+                                    pointIncreaser += 2000;
+                                    updatePoints((int)Math.pow(position + 2, multipliers[position])+(int)Math.pow(10,position));
+                                    break;
+                                case 4: // code to be executed if n = 1;
+                                    updateCps(10000);
+                                    updatePoints((int)Math.pow(position + 2, multipliers[position])+(int)Math.pow(10,position));
+                                    break;
+                                case 5: // code to be executed if n = 1;
+                                    pointIncreaser += 20000;
+                                    updatePoints((int)Math.pow(position + 2, multipliers[position])+(int)Math.pow(10,position));
+                                    break;
+                                case 6: // code to be executed if n = 1;
+                                    updateCps(1000000);
+                                    updatePoints((int)Math.pow(position + 2, multipliers[position])+(int)Math.pow(10,position));
+                                    break;
+                                case 7: // code to be executed if n = 1;
+                                    pointIncreaser += 2000000;
+                                    updatePoints((int)Math.pow(position + 2, multipliers[position])+(int)Math.pow(10,position));
+                                    break;
+                                default: // code to be executed if n doesn't match any case
+                            }
+                            multipliers[position]++;
+                            ((TextView)convertView.findViewById(R.id.tvCost)).setText("Cost: " + (int)Math.pow(position + 2, multipliers[position])+(int)Math.pow(10,position));
                             save();
                         } else {
                             (new AlertDialog.Builder(MainActivity.this)).setMessage("Do not have enough bricks")
